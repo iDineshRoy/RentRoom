@@ -8,14 +8,15 @@
         <div class="row justify-content-center">
             {% if userobj == user %}
                 {% if link != "" %}
-                <form action="{{ link }}">
+                <!-- <form action="">
                     <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">{{ btnname }}</button>
-                </form>
+                </form> -->
+                <a href="{% url link  %}" class="btn btn-primary btn-sm" role="button">{{ btnname }}</a>
                 {% endif %}
             {% else %}
             <br>
             <label for="reg">If you haven't already:</label> &nbsp;
-                <a href="/accounts/reg" class="btn btn-primary btn-sm" role="button">Register Now</a>
+                <a href="{% url 'register' %}" class="btn btn-primary btn-sm" role="button">Register Now</a>
                 &nbsp; <i style="font-size:24px" class="fa">&#xf118;</i>
             {% endif %}
         </div>

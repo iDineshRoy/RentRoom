@@ -1,9 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.utils.encoding import smart_str
-from .models import UserDetails, Comments
+# from .models import UserDetails, Comments
 from django.contrib.auth import password_validation
-from .addressdetails import skillslist as sl
+from .models import AccountsComments
 
 class NumberForm(forms.Form):
     number = forms.CharField(widget=forms.NumberInput(attrs={'class':"form-control", 'placeholder':"Mobile Number"}), max_length=10, min_length=10, label="")
@@ -61,8 +61,6 @@ class UserDetailsForm(forms.Form):
     district= forms.ChoiceField(required=True, widget=forms.Select(attrs={'id': 'district', 'class':"btn btn-secondary dropdown-toggle", 'onchange': 'javascript:getmun();'}))
     municipality= forms.ChoiceField(widget=forms.Select(attrs={'id': 'municipality', 'class':"btn btn-secondary dropdown-toggle"}),required=True)
     wardno = forms.CharField(label=("Ward No.:"), widget=forms.NumberInput(attrs={'id': 'wardno','name':'wardno','class':"form-control", 'placeholder':"वडा नं", 'min':'1', 'max':'25'}),required=True)
-    skillslist = forms.ChoiceField(label=("Preferred Job Type"),choices=sl,required=True,widget=forms.Select(attrs={'id': 'skillslist', 'name':'skillslist','class':"btn btn-secondary dropdown-toggle"}))
-    aboutSkill = forms.CharField(label=("About Skill"), widget=forms.Textarea(attrs={'id': 'aboutSkill','name':'aboutSkill','class':"form-control", 'placeholder':"तपाइँकाे सिपकाे बारेमा थाेरै जानकारी", 'maxlength':'250'}))
     age = forms.CharField(label=("Age"), widget=forms.NumberInput(attrs={'id':'age', 'name':'age','class':'form-control', 'placeholder':"Age (उमेर)", 'min':'13', 'max':'130'}))
     
     def clean_province(self, *args, **kwargs):
@@ -74,39 +72,9 @@ class UserDetailsForm(forms.Form):
     def clean_municipality(self, *args, **kwargs):
         n=self.cleaned_data.get('municipality')
         return n
-
-class UpdateDetailsForm(forms.ModelForm):
-    skills = forms.ChoiceField(label=("Preferred Job Type"),choices=sl,required=True,widget=forms.Select(attrs={'id': 'skillslist', 'name':'skillslist','class':"btn btn-secondary dropdown-toggle"}))
-    class Meta:
-        model = UserDetails
-        fields = ['skills', 'skilldetails' ]
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['skilldetails'].widget.attrs.update({'id': 'aboutSkill','name':'aboutSkill','class':"form-control", 'placeholder':"तपाइँकाे सिपकाे बारेमा थाेरै जानकारी", 'maxlength':'250'})
-
-class UpdatePersonalDetails(forms.ModelForm):
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class':"form-control mb-4", 'placeholder':"First Name"}), label="")
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class':"form-control mb-4", 'placeholder':"Last Name"}), label="")
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class':"form-control mb-4", 'placeholder':"Email"}), label="")
-
-    class Meta:
-        model = User
-        fields = ['first_name','last_name','email']
-
-    def clean_first_name(self, *args, **kwargs):
-        n=self.cleaned_data.get('first_name')
-        return n
-
-    def clean_last_name(self, *args, **kwargs):
-        n=self.cleaned_data.get('last_name')
-        return n    
-
-    def clean_email(self, *args, **kwargs):
-        n = self.cleaned_data.get('email')
-        return n
-
+    
 class CommentForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea(attrs={'id':'commentcontent','class':"form-control", 'placeholder':"तपाईंले वहाँकाे काम गराइ कस्ताे पाउनुभयो, लेख्नुहाेस्..", 'maxlength':'398'}), label="Comment")
     class Meta:
-        model = Comments
+        model = AccountsComments
         fields = ['content']

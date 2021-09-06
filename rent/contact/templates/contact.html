@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<head>
+    <style>
+        #statussendingemail {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<div class="container">
+    <div class="row">
+      <div class="col-sm-9 col-md-7 col-lg-6 mx-auto">
+          <div class="card-body">
+                <form action="" method="POST" class="text-center p-6" id="contactform">
+                    {% csrf_token %}
+                    <p class="h4 mb-4">Contact Us</p>
+                    {{ form.as_p }}
+                <button class="btn btn-primary" type="submit" id="emailbutton" onclick="sendingemail()">Send Email</button>
+                <br>
+                <br>
+                <div id="statussendingemail" class="text-center">
+                    {% load static %}
+                    <img src="{% static 'images/kjagir-spinner.gif' %}" alt="kjagir" height="40" width="40">
+                </div>
+                <label for="email">You can email us at: <strong>support@kjagir.com</strong></label><br>
+                <a href="https://m.me/KJagir"><i class="fab fa-facebook-messenger"></i> Message Us</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+{% endblock %}

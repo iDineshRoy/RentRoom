@@ -1,0 +1,28 @@
+#commentcontent {
+    height: 100px;
+}
+#district {
+    visibility: visible;
+}
+#municipality {
+    visibility: visible;
+}
+#wardno {
+    visibility: visible;
+    width: 200px;
+}
+#aboutSkill {
+    visibility: visible;
+    width: 250px;
+    height: 150px;
+}
+#age {
+    
+    width: 200px;
+}
+#sticky-footer {
+    flex-shrink: none;
+  }
+#searchdivmain{
+    height: 100vh;
+}

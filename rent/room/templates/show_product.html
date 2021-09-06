@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} {% endblock %}
+{% block content %}
+<meta property="og:title" content="{{ userdetail.skills }}">
+<meta property="og:description" content="{{ product.description }}">
+
+<div class="col-12 col-md-10 mb-3 mx-auto" id="scroller">
+    <br>      
+      
+    <div class="row d-flex justify-content-center">
+        <div class="card mb-3" style="width: 100%; max-width: 22rem;">
+          {% if product.image %}
+            <a href="{{ product.image.url }}"><img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.title }}" height="190"  style="object-fit: cover;"></a>
+          {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ product.title }}</h5>
+                <h6 class="card-subtitle mb-2" style="color: green;">रु {{ product.price }}/-</h6>
+                <p class="card-text">{{ product.description|linebreaks }}</p>
+                <li class="media">
+                  <i class="material-icons">&#xe0c8;</i>
+                <div class="media-body">
+                  <small>
+                    {{ plocation.district }}, {{ plocation.municipality }}-{{ plocation.ward }}
+                </small>
+                </div>
+              </li>                
+                <hr>
+                <li class="media float-left">
+                  
+                <div class="media-body">
+                  {% if user.is_authenticated %}
+                  <p class="card-text"><i class="material-icons" style="display: inline-flex; vertical-align: bottom; font-size: 18px;">&#xe0b0;</i><a href="tel:{{ product.seller.username }}">{{ product.seller.username }}</a></p>
+                  {% else %}
+                  <strong><i class="material-icons" style="display: inline-flex; vertical-align: bottom; font-size: 18px;">&#xe0b0;</i><a href="/accounts/login?next=/product/{{ product.id }}">Show Contact</a> </strong>
+                  {% endif %}
+                </div>
+              </li>
+              <li class="media float-right">
+                
+              <div class="media-body">
+                  <p class="card-text"><small class="text-muted"><i class="material-icons" style="display: inline-flex; vertical-align: bottom; font-size: 18px;">&#xe192;</i>{{ product.created_date|timesince }} ago</small></p>
+              </div>
+              </li>
+              <br>
+                <hr>
+                <p class="card-meta float-left"><i class="material-icons" style="font-size:14px">visibility</i> {{ views }}</p>
+                {% if user.is_authenticated %}
+                {% if liked %}
+                <p class="card-meta float-right">{{ product.likes.count }} <a href="/like/{{ product.id }}"><i class="fa fa-heart" style="font-size:16px;color:red"></i></a></p>    
+                {% else %}
+                <p class="card-meta float-right">{{ product.likes.count }} <a href="/like/{{ product.id }}"><i class="fa fa-heart-o" style="font-size:16px;color:red"></i></a></p>    
+                {% endif %}
+                {% else %}
+                <p class="card-meta float-right">{{ product.likes.count }} <i class="fa fa-heart-o" style="font-size:16px;color:red"></i></p>    
+                {% endif %}
+            </div>
+               
+        </div>
+        
+        
+
+    </div>
+    <div class="row d-flex justify-content-center">
+        {% for tag in product.tags.all %}
+        <a href="{% url 'tagged' tag.slug %}" class="mr-1 badge badge-info">{{ tag }}</a>
+        {% endfor %}
+    </div>
+    <div class="row d-flex justify-content-center">
+      
+      {% for image in images %}
+      <a href="{{ image.image.url }}"> <img src="{{ image.image.url }}" class="rounded float-left" alt="{{ product.title }}" height="160"  style="object-fit: cover;"></a>&nbsp;
+      {% endfor %}
+    </div> 
+  <div class="row d-flex justify-content-center">
+    <small>विक्रेता: <a href="{% if user.is_authenticated %}{% url 'show_user' product.seller.id %}{% else %}{% url 'login' %}{% endif %}"><p class="mr-1 badge badge-secondary">{{ product.seller.first_name }} {{ product.seller.last_name }}</p></a></small> 
+  </div>
+    <div class="row d-flex justify-content-center">
+        {% if user.is_authenticated %}
+        {% if user == product.seller %}
+        
+        <a href="/edit_product/{{ product.id }}" class="btn btn-primary btn-sm" role="button">Edit Product</a>&nbsp;
+        <a href="/add_pics/{{ product.id }}" class="btn btn-primary btn-sm" role="button">Add Pictures</a>&nbsp;
+        <a href="/delete_pics/{{ product.id }}" class="btn btn-primary btn-sm" role="button">Delete Pictures</a>
+        
+        {% endif %}
+        {% endif %}
+    </div>
+    <div class="row d-flex justify-content-center">
+    <div class="fb-like" data-href="{{ request.build_absolute_uri }}" data-width="" data-layout="button_count" data-action="like" data-size="small" data-share="true"></div>
+    </div>
+    <hr>
+    <div class="row d-flex justify-content-center">
+        <div class="col-sm-8 mx-auto">
+          {% if user.is_authenticated %}
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Comment</button>
+            </form>
+          {% endif %}
+            {{ comments.count }} Comment{{ comments|pluralize }}
+        {% for comment in comments %}
+            <div class="media">
+                <div class="media-body">
+                    <h5 class="mt-0"><a href="/accounts/user/{{comment.user.id}}">{{ comment.user.first_name }}</a></h5>
+                    <p>{{ comment.content }}<small> {{ comment.timestamp|timesince }} ago</small>
+                    {% if comment.user.username == user.username %}
+                      &nbsp; <a href="/accounts/comment/{{ comment.id }}/{{ userinfo.id }}" style="color: red;"><small><strong>Delete</strong></small></a></p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    
+    <hr>
+    <h5>YOU MAY LIKE</h5>
+    {% block products %}
+    {{ block.super }}
+    {% endblock %}
+    {% block text_suggestions %}
+    {{ block.super }}
+    {% endblock %}
+    {% block nearby %}
+    {{ block.super }}
+    {% endblock %}
+    
+    
+</div>
+{% endblock %}
