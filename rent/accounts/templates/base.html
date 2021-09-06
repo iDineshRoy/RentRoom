@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="KJagir is an open and free platform for a job search in Nepal. The job seekers can register on KJagir. Employee seekers whereas can search for the workers' job type they want and can directly contact them. We tend to provide equal opportunities to the workers." />
+    <meta name="keywords" content="KJagir, Nepal, Job, Search, Employee, Businesses, Simplified, Everyone, Nepali, नेपाली, जागिर, के जागिर, केजागिर, काम, व्यवसाय, व्यापार, काराेवार" /> 
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    {% load static %}
+    <meta property='og:image' content="{% static 'images/KJagir_logo.png' %}"/>
+    <!-- <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet"> -->
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}"/>
+    <link href="{% static 'css/profile.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+      .footer {
+          position: fixed;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          background-color: red;
+          color: white;
+          text-align: center;
+          visibility: hidden;
+      }
+      .canvas-container {
+        padding-bottom: 42px;
+        background-color: #b0e8eb;
+      }
+      
+    </style>
+    <title>{% block title %}KJagir - Jobs at your fingertips | Employees and Businesses in Nepal | Search in the right way{% endblock %}</title>
+  </head>
+  <body class="canvas-container">
+    <!-- new code -->
+    <!-- Load Facebook SDK for JavaScript -->
+    <div id="fb-root"></div>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          xfbml            : true,
+          version          : 'v7.0'
+        });
+      };
+
+      (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+    <!-- Your Chat Plugin code -->
+    <div class="fb-customerchat"
+      attribution=setup_tool
+      page_id="101581231564467">
+    </div>
+    
+    <!-- new code ends -->
+
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0&appId=243844700161404&autoLogAppEvents=1"></script>
+    {% include 'navbar.html' %}
+    <div class="container-fluid">
+      
+          
+          {% block content %}
+          <h1>Hello, world!</h1>
+          {% block suggestions %}
+          <div class="row d-flex justify-content-center">
+            <!-- {% for s,v in skills.items %}
+                <h5><a href="/search/?q={{ s }}" class="badge" style="background-color: #1DA1F2; color: black;">{{ s }} <span class="badge badge-light">{{ v }}</span></a></h5>
+                &nbsp;
+            {% endfor %} -->
+            {% for s,v in skills.items %}
+                <h6><a href="/search/?q={{ s }}" class="myButton">{{ s }} <span style="color: black;">{{ v }}</span></a></h6>
+                &nbsp;
+            {% endfor %}
+        </div>
+
+          {% endblock %}
+          {% endblock %}
+
+          {% include 'js.html' %}
+          
+
+    </div>
+    
+  </body>
+  <footer class="footer py-3 text-black-50 text-center" style="background-color: #E1E8ED;">
+    <div class="container text-center">
+      <small>Copyright &copy; KJagir Pvt. Ltd.</small>
+    </div>
+  </footer>
+</html>

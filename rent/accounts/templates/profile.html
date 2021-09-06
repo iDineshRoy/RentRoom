@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col-sm-9 col-md-5 col-lg-4 mx-auto">
+    <div class="row">
+        <div class="card-body">
+        <h5 class="card-title">Enter more details:</h5>
+
+        <form action="" method="POST">
+            {% csrf_token %}
+            
+            {{ form.as_p }}
+            {% if form.province.errors %}
+            <span class="help-block">{{ form.province.errors.0 }}</span>
+            {% endif %}
+            {% if form.age.errors %}
+            <span class="help-block">{{ form.age.errors.0 }}</span>
+            {% endif %}
+            <button class="btn btn-primary"" type="submit" id="submitbutton">Submit Details</button>
+            
+        </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

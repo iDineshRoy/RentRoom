@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        
+          <div class="card-body">
+                <form action="" method="POST" class="text-center border border-light p-5">
+                    <p class="h4 mb-4">Deleting comment</p>
+                    {% csrf_token %}
+                    <h5>Do you want to delete the following comment?</h5>
+                    {{ obj.content }} <br><br>
+                    
+                    <button class="btn btn-danger" type="submit" id="submitbutton">Yes</button>
+            </form>
+            </div>
+        
+    </div>
+    </div>
+</div>
+
+
+{% endblock %}

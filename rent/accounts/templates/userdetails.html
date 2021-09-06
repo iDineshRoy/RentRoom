@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} {% endblock %}
+{% block content %}
+<meta property="og:title" content="{{ userdetail.skills }}">
+<div class="col-12 col-md-10 mb-3 mx-auto" id="scroller">
+    <br>
+    {% block innernav %}
+    <div class="row d-flex justify-content-center">
+        {% if user.is_authenticated %}
+        {% if user.username == userinfo.username %}
+        
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-home" aria-selected="true">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-favourite" role="tab" aria-controls="pills-profile" aria-selected="false">Favourites</a>
+          </li>
+        </ul>
+        
+        {% endif %}
+        {% endif %}
+    </div>
+    {% endblock %}
+    <div class="tab-content" id="pills-tabContent">
+      <div class="tab-pane fade show active" id="pills-profile" role="tabpanel" aria-labelledby="pills-home-tab">
+      
+    <div class="row d-flex justify-content-center">
+        <div class="card" style="width: 22rem;">
+            <div class="card-body">
+                
+                <h5 class="card-title">{{userinfo.first_name}} {{userinfo.last_name}} - {{ userdetail.age }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted"> {{ userdetail.skills }}</h6>
+                <ul class="list-unstyled">
+                    <li class="media my-4">
+                        <i class="material-icons" style="font-size:24px">&#xe241;</i>
+                      <div class="media-body">
+                        <h5 class="mt-0 mb-1">About Skill</h5>
+                        {{ userdetail.skilldetails|linebreaks }}
+                      </div>
+                    </li>
+                    <li class="media">
+                        <i class="material-icons">&#xe0c8;</i>
+                      <div class="media-body">
+                        <h5 class="mt-0 mb-1">Address</h5>
+                        Province: <strong>{{ userdetail.province }}</strong> <br>
+                        District: <strong>{{ userdetail.district }}</strong> <br>
+                        Municipality: <strong>{{ userdetail.municipality }}</strong> <br>
+                        Ward No.: <strong>{{ userdetail.ward }}</strong><br><br>
+                      </div>
+                    </li>
+
+                    <li class="media">
+                        <i class="material-icons">&#xe0b0;</i>
+                      <div class="media-body">
+                        <h5 class="mt-0 mb-1">Contact</h5>
+                        {% if user.is_authenticated %}
+                        <strong> <a href="tel:{{ userinfo.username }}">{{ userinfo.username }}</a> </strong>
+                        {% else %}
+                        <strong> <a href="/accounts/login?next=/accounts/user/{{ userinfo.id }}">Show Contact</a> </strong>
+                        {% endif %}
+                      </div>
+                    </li>
+                  </ul>
+                <hr>
+                <p class="card-meta float-left"><i class="material-icons" style="font-size:14px">visibility</i> {{ views }}</p>
+                  {% if user.is_authenticated %}
+                  {% if liked %}
+                  <p class="card-meta float-right">{{ userdetail.likes.count }} <a href="/accounts/like/{{ userinfo.id }}"><i class="fa fa-heart" style="font-size:16px;color:red"></i></a></p>    
+                  {% else %}
+                  <p class="card-meta float-right">{{ userdetail.likes.count }} <a href="/accounts/like/{{ userinfo.id }}"><i class="fa fa-heart-o" style="font-size:16px;color:red"></i></a></p>    
+                  
+                  {% endif %}
+                  {% else %}
+                  <p class="card-meta float-right">{{ userdetail.likes.count }} <i class="fa fa-heart-o" style="font-size:16px;color:red"></i></p>    
+                  {% endif %}
+                  
+            </div>
+        </div>
+        
+    </div>
+    <div class="row d-flex justify-content-center">
+      <p class="card-meta float-left"> <small>Joined {{ date|timesince }} ago</small></p>
+    </div>
+    <div class="row d-flex justify-content-center">
+        {% if user.is_authenticated %}
+        {% if user.username == userinfo.username %}
+        
+        <a href="/accounts/profile-update/{{ userinfo.id }}" class="btn btn-primary btn-sm" role="button">Edit Profile</a>&nbsp;
+        <a href="/accounts/changepwd" class="btn btn-primary btn-sm" role="button">Change Password</a>
+        
+        {% endif %}
+        {% endif %}
+    </div>
+    <div class="row d-flex justify-content-center">
+    <div class="fb-like" data-href="{{ request.build_absolute_uri }}" data-width="" data-layout="button_count" data-action="like" data-size="small" data-share="true"></div>
+    </div>
+    <hr>
+    <div class="row d-flex justify-content-center">
+        <div class="col-sm-8 mx-auto">
+          {% if user.is_authenticated %}
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Comment</button>
+            </form>
+          {% endif %}
+            {{ comments.count }} Comment{{ comments|pluralize }}
+        {% for comment in comments %}
+            <div class="media">
+                <div class="media-body">
+                    <h5 class="mt-0"><a href="/accounts/user/{{comment.user.id}}">{{ comment.user.first_name }}</a></h5>
+                    <p>{{ comment.content }}<small> {{ comment.timestamp|timesince }} ago</small>
+                    {% if comment.user.username == user.username %}
+                      &nbsp; <a href="/accounts/comment/{{ comment.id }}/{{ userinfo.id }}" style="color: red;"><small><strong>Delete</strong></small></a></p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    <hr>
+    <h6>Some other profiles:</h6>
+    {% for user in recommend %}
+        <h5 class="mt-0"><a href="/accounts/user/{{user.user.id}}">{{ user.skills }}</a></h5>
+        <small>{{ user.skilldetails|truncatechars:50 }}</small>
+    {% endfor %}
+    </div>
+    {% if user.is_authenticated %}
+    <div class="tab-pane fade" id="pills-favourite" role="tabpanel" aria-labelledby="pills-profile-tab">
+      <div class="row d-flex justify-content-center">
+      <p>You like {{ likes.count }} employee{{ likes.count|pluralize }}/service{{ likes.count|pluralize }}.</p>
+      </div>
+      <div class="row d-flex justify-content-center">
+        
+      {% for like in likes %}
+      <div class="px-1 py-1 d-flex align-items-stretch">
+      <div class="card mb-3" style="width: 15rem;">
+        <div class="card-header bg-transparent"><a href="/accounts/user/{{ like.user.id }}"><h5>{{ like.user.first_name }} {{ like.user.last_name }}</h5></a></div>
+        <div class="card-body text-dark">
+          <h5 class="card-title">{{ like.skills }}</h5>
+          <p class="card-text">{{ like.skilldetails|truncatechars:50 }}</p>
+        </div>
+        <div class="card-footer bg-transparent"><a href="tel:{{ like.user.username }}">{{ like.user.username }}</a></div>
+      </div>
+    </div>
+      {% endfor %}
+    </div>
+    </div>
+    {% endif %}
+      
+      
+    </div>
+</div>
+{% endblock %}

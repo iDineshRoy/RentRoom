@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form action="" method="POST">
+    {% csrf_token %}
+    
+    {{ form.as_p }}
+<!-- 
+    <div id="address">
+        <select id="province" name="province" onchange="getdis()" class="btn btn-secondary dropdown-toggle">Province
+            {% for province in provinces %}
+            <option value='{{province}}'>{{ province }}</option>
+            {% endfor %}
+        </select> <br> <br>
+        <select id="district" name="district" onchange="getmun()" class="btn btn-secondary dropdown-toggle"></select> <br> <br>
+        <select id="municipality" class="btn btn-secondary dropdown-toggle" name="municipality"></select>
+        
+    </div>
+    <br>
+    <input type="text" id="wardno" name="wardno" class="form-control" placeholder="Ward No." required>
+    <br>
+    <textarea class="form-control is-invalid" name="aboutSkill" id="aboutSkill" placeholder="तपाइँकाे सिपकाे बारेमा थाेरै जानकारी" maxlength="250" required></textarea>
+    <p><span id="wordcount">250</span> Characters remaining</p>
+    <br>
+    
+    <select id="skillslist" name="skillslist" class="btn btn-secondary dropdown-toggle">Skills List
+        {% for skill in skills %}
+        <option value='{{skill}}'>{{ skill }}</option>
+        {% endfor %}
+    </select>
+    
+    <br>
+    <br>
+    <input type="text" id="age" name="age" class="form-control" placeholder="Age (उमेर)" required>
+    <br>
+    <br> -->
+    <button class="btn btn-primary"" type="submit" id="submitbutton">Save Details</button>
+</form>
+
+<script>
+    function populate(){
+        let depSelect = document.querySelector('#district');
+        let option;
+        option = document.createElement("OPTION");
+        option.innerText = "abc";
+        option.value = "abc";
+        depSelect.appendChild(option);
+    }
+    
+</script>
+
+{% endblock %}
+
+

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% load socialaccount %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        
+        {% if user.is_authenticated %}
+        <p>Welcome, You are logged in as {{ user.username }}</p>
+        {% else %}
+        <a href="{% provider_login_url 'google' %}">Login With Google</a>
+        {% endif %}
+        <br>
+        <br>
+        <div class="card-body">
+        <form class="text-center border border-light p-5" method="POST" action="">
+            {% csrf_token %}
+            <p class="h4 mb-4">Enter your 10-digit mobile number</p>
+            {{ form.as_p }}            
+            <button class="btn btn-primary" type="submit">Next</button>
+        </form>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
