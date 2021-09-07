@@ -11,6 +11,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('contact/',include('contact.urls'), name='contact'),
     path('', include('room.urls')),
+    path('search/',include('searches.urls')),
     path('login_google/', TemplateView.as_view(template_name="login.html")),
     path('accounts/', include('allauth.urls')),
     path('logout', LogoutView.as_view()),

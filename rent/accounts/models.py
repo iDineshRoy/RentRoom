@@ -1,3 +1,5 @@
+from typing import Tuple
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -23,7 +25,6 @@ class AccountsUserdetails(models.Model):
     age = models.IntegerField(blank=True, null=True)
     user = models.ForeignKey('AuthUser', models.DO_NOTHING)
     skills = models.CharField(max_length=300, blank=True, null=True)
-
     class Meta:
         managed = False
         db_table = 'accounts_userdetails'

@@ -1,0 +1,7 @@
+{% if items.count > 0 %}
+{% for item in items %}
+
+<option value="{{ item }}">{{ item }}</option>
+{% endfor %}
+{% else %}
+{% endif %}

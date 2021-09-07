@@ -40,3 +40,12 @@ class RoomViewsTracker(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+class RoomUserMoreDetails(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    phone = models.IntegerField()
+    email = models.EmailField(blank=True, null=True)
+    class Meta:
+        managed = True
+        app_label = 'room'
+        db_table = 'room_moreuserdetails'

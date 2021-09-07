@@ -4,8 +4,8 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="KJagir is an open and free platform for a job search in Nepal. The job seekers can register on KJagir. Employee seekers whereas can search for the workers' job type they want and can directly contact them. We tend to provide equal opportunities to the workers." />
-    <meta name="keywords" content="KJagir, Nepal, Job, Search, Employee, Businesses, Simplified, Everyone, Nepali, नेपाली, जागिर, के जागिर, केजागिर, काम, व्यवसाय, व्यापार, काराेवार" /> 
+    <meta name="description" content="Living away from home is simplified by Rent Room. You can find the room of your choice by searching the room suitable in your area." />
+    <meta name="keywords" content="VPIT, Rent Room, Rental Services, Paying Guests, Students, Couples, Professionals" /> 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     {% load static %}
@@ -32,7 +32,7 @@
       }
       
     </style>
-    <title>{% block title %}KJagir - Jobs at your fingertips | Employees and Businesses in Nepal | Search in the right way{% endblock %}</title>
+    <title>{% block title %}Rent Room - Living away from the home simplified | Best for students, professionals, couples | Search in the right way | rent.vpit.com.np{% endblock %}</title>
   </head>
   <body class="canvas-container">
     
@@ -41,20 +41,195 @@
       
           
           {% block content %}
-          <h1>Hello, world!</h1>
-          {% block suggestions %}
-          <div class="row d-flex justify-content-center">
-            <!-- {% for s,v in skills.items %}
-                <h5><a href="/search/?q={{ s }}" class="badge" style="background-color: #1DA1F2; color: black;">{{ s }} <span class="badge badge-light">{{ v }}</span></a></h5>
-                &nbsp;
-            {% endfor %} -->
-            {% for s,v in skills.items %}
-                <h6><a href="/search/?q={{ s }}" class="myButton">{{ s }} <span style="color: black;">{{ v }}</span></a></h6>
-                &nbsp;
-            {% endfor %}
-        </div>
+          <div class="col-12 col-md-10 mb-3 mx-auto" id="searchdivmain">
+            <br>    
+            {% block searchbar %}
+            <div class="col d-flex justify-content-center">
+                <form class="form-inline mx-auto" action="/search/">
+                  {% csrf_token %}
+                    <input class="form-control mr-sm-2" type="search" list="search-results" name="q" id="searching" placeholder="Search" aria-label="Search" value="{{ query }}" required>
+                    <datalist id="search-results">
+                    </datalist>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> &nbsp;
+                    <a href="{% url 'new_product' %}" class="btn btn-outline-primary">Put on Rent</a>
+                </form>
+            </div>
+            {% if number %}
+            <p>{{ number }} result{{number|pluralize}} found!</p>
+            {% endif %}
+            <hr>
+            {% endblock %}
+            {% block products %}
+            
+            <div class="row d-flex justify-content-center">
+                {% if products %}
+                {% for product in products %}
+                {% if product.status == 'Available' %}
+                <div class="px-1 py-1 d-flex align-items-stretch"> 
+                <div class="card" href="{% url 'show_product' product.id %}" style="width: 18rem; margin-bottom: 0rem;">
+                  <a  href="{% url 'show_product' product.id %}">
+                  {% if product.image %}
+                  <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.title }}" height="190"  style="object-fit: cover;">
+                  {% else %}
+                  
+                  <img class="card-img-top" src="{% static 'images/KBikri_logo.png' %}" alt="{{ product.title }}" height="190"  style="object-fit: cover;">
+                  {% endif %}
+                  </a>
+                    <div class="card-body card-body-cascade">
+                        <h5 class="card-title"><a href="{% url 'show_product' product.id %}" class="card-link">{{ product.title }}</a></h5>
+                        <h6 class="card-subtitle mb-2" style="color: green;">रु {{ product.price }}/-</h6>
+                        <ul class="list-unstyled">
+                            <li class="media my-4">
+                                <!-- <i class="material-icons" style="font-size:24px">&#xe241;</i> -->
+                              <div class="media-body">
+                                
+                                {{ product.description|truncatechars:50 }}
+                              </div>
+                            </li>
+                            <li class="media">
+                                <i class="material-icons">&#xe0c8;</i>
+                              <div class="media-body">
+                                <small>
+                                {% for l in location %}
+                                {% if product.seller.id == l.user_id %}
+                                {{ l.district }}, {{ l.municipality }}-{{ l.ward }}
+                                {{ l.viewstracker.timestamp }}
+                                {% endif %}
+                                {% endfor %}
+                              </small>
+                              </div>
+                            </li>
+                            
+                          </ul>                
+                          <li class="media">
+                            <i class="material-icons float-left">&#xe0b0;</i>
+                          <div class="media-body">
+                            <a href="{% url 'show_product' product.id %}" class="float-left">Show Contact</a>
+                            <p class="float-right">{{ product.likes.count }} <i class="fa fa-heart-o" style="font-size:16px;color:red"></i></p>
+                          </div>
+                        </li>
+                        
+                    </div>
+                </div>   
+                </div>
+                {% endif %}
+                {% endfor %}  
+                {% else %}
+                <div>
+                    <p>Sorry, no products found!</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endblock %}
+            <div class="row justify-content-center">
+                
+                    <nav aria-label="...">
+                        <ul class="pagination">
+                            {% if products.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}page={{ products.previous_page_number }}">Previous</a></li>
+                            {% endif %}
+                            {% for pg in products.paginator.page_range %}
+                                {% if products.number == pg %}
+                                    <li class="page-item active"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}page={{ pg }}">{{ pg }}</a></li>
+                                {% elif pg > products.number|add:'-3' and pg < products.number|add:'3' %}
+                                    <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}page={{ pg }}">{{ pg }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if products.has_next %}
+                                <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}page={{ products.next_page_number }}">Next</a></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                
 
-          {% endblock %}
+            </div>
+            
+            {% block text_suggestions %}
+            <br>
+            {% if text_suggestions %}
+            <section class="padding-bottom-sm">
+
+              <header class="section-heading heading-line">
+                <h4 class="title-section text-uppercase">Recommended items</h4>
+              </header>
+              
+              <div class="row row-sm">
+                {% for product in text_suggestions %}
+                {% if product.status == 'Available' %}
+                <div class="col-xl-2 my-2 col-lg-3 col-md-4 col-6">
+                  <div href="#" class="card card-sm card-product-grid">
+                    {% if product.image %}
+                    <a href="{% url 'show_product' product.id %}" class="img-wrap"> <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.title }}" height="100"  style="object-fit: cover;"> </a>
+                    {% else %}
+                    <a href="{% url 'show_product' product.id %}" class="img-wrap"> <img class="card-img-top" src="{% static 'images/KBikri_logo.png' %}" alt="{{ product.title }}" height="100"  style="object-fit: cover;"> </a>
+                    {% endif %}
+                    <div class="card-body card-body-cascade">
+                    <figcaption class="info-wrap">
+                      <a href="{% url 'show_product' product.id %}" class="card-title">{{ product.title|truncatechars:8 }}</a>
+                      <div class="card-subtitle" style="color: green;">रु {{ product.price }}</div> <!-- price-wrap.// -->
+                    </figcaption>
+                  </div>
+                  </div>
+                </div> <!-- col.// -->
+                {% endif %}
+                {% endfor %}
+              </div> <!-- row.// -->
+              </section>
+              {% endif %}
+            {% endblock %}
+            
+            {% block tags %}
+            {% if tags %}
+            <br>
+            <h5>वर्गहरू</h5>
+            <div class="row justify-content-center">
+              {% for tag in tags %}
+              <div class="col-sm">
+                <h5><a href="{% url 'tagged' tag.slug %}" class="badge badge-info">{{ tag }}</a></h5>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+            {% endblock %}
+            
+            {% block nearby %}
+            <br>
+            {% if nearby %}
+            {% block nearby_text %}<h5>तपाइँ नजिकै</h5>{% endblock %}
+
+            
+              {% for product in nearby %}
+              {% if forloop.first %}<div class="row justify-content-center">{% endif %}
+              {% if product.status == 'Available' %}
+              <div class="col-sm">
+                <div class="media">
+                  {% if product.image %}
+                  <img src="{{ product.image.url }}" class="rounded mr-3" alt="{{ product.title }}" width="64"  style="object-fit: cover;">
+                  {% else %}
+                  <img src="{% static 'images/KBikri_logo.png' %}" class="rounded mr-3" alt="{{ product.title }}" height="64"  style="object-fit: cover;">
+                  {% endif %}
+                  <div class="media-body">
+                    <a href="{% url 'show_product' product.id %}"><h5 class="mt-0">{{ product.title }}</h5></a>
+                    <strong style="color: green;">रु {{ product.price }}</strong><br>
+                    {{ product.description|truncatechars:50 }}
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+              {% if forloop.counter|divisibleby:4 %}</div><div class="row justify-content-center">{% endif %}
+                {% if forloop.last %}</div>{% endif %}
+              {% endfor %}
+            
+            {% endif%}
+            {% endblock %}
+            <hr>
+            <div class="text-center mx-auto">
+            <p><br> {{ noofproducts }} product{{ noofproducts|pluralize }} available!</p>
+            <p>के तपाइँ पनि बेच्न चाहनुहुन्छ? छ भने, तल Sell बटनमा क्लिक गर्नुहाेस्।</p>
+            <a href="{% url 'new_product' %}" class="btn btn-outline-primary">Sell</a>
+            </div>
+            <br>
+          </div>
           {% endblock %}
 
           {% include 'js.html' %}
@@ -65,7 +240,7 @@
   </body>
   <footer class="footer py-3 text-black-50 text-center" style="background-color: #E1E8ED;">
     <div class="container text-center">
-      <small>Copyright &copy; KJagir Pvt. Ltd.</small>
+      <small>Copyright &copy; VPIT Pvt. Ltd.</small>
     </div>
   </footer>
 </html>

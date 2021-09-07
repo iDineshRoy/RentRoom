@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from .models import AccountsUserdetails, AccountsComments
-from .forms import NumberForm, OTPForm, RegistrationForm, UserLoginForm, UserDetailsForm, CommentForm
+from .forms import NumberForm, OTPForm, RegistrationForm, UserLoginForm, AccountUserDetailsForm, CommentForm, UserDetailsForm
 from django.contrib.auth.models import User, auth
 from django.contrib.auth import logout, authenticate, login, update_session_auth_hash
 from . import sms
@@ -19,7 +19,7 @@ def showusers(request):
     #     obj = paginator.page(page)
     # except(EmptyPage, InvalidPage):
     #     obj = paginator.page(paginator.num_pages)
-    context = {"users": obj_list, "title":"Users on KJagir"}
+    context = {"users": obj_list, "title":"Users on Rent Room"}
     return render(request, 'users.html', context)
 
 def enternumber(request):
@@ -114,7 +114,7 @@ def profile(request):
             return render(request, 'pages/message.html', {'message':"The profile already exists."})
     else:
         form = UserDetailsForm()
-    context = {"title": "User Details Form - KJagir", "form":form}
+    context = {"title": "User Details Form - Rent Room", "form":form}
     return render(request, 'profile.html', context)
     # except:
     #     return render(request, 'pages/message.html', {'message':"The profile already exists."})
@@ -156,3 +156,20 @@ def userinfo(request, id):
 def user_products(user):
     products = Room.objects.filter(seller=user.user_id)
     return products
+
+def updatedetails(request, id):
+    try:
+        userobj = AccountsUserdetails.objects.get(user__id=id)
+        form = AccountUserDetailsForm(instance=userobj)
+        if request.method == 'POST':
+            form = AccountUserDetailsForm(request.POST, instance=userobj)
+            if form.is_valid():
+                form.user = request.user
+                form.save()
+                print(userobj.user.id)
+                return redirect('show_user',str(userobj.user.id))
+        context = {"title": "User Details Form", "form":form }
+        return render(request, 'updatedetails.html', context)
+    except:
+        context = {'message':"Sorry, some error occured."}
+        return render(request, 'pages/message.html', context)

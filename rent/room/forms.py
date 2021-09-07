@@ -1,5 +1,5 @@
 from django import forms
-from .models import Room, Images, RoomComments
+from .models import Room, Images, RoomComments, RoomUserMoreDetails
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 
@@ -36,3 +36,9 @@ class RoomCommentForm(forms.ModelForm):
     class Meta:
         model = RoomComments
         fields = [ 'content' ]
+
+class RoomUserMoreDetailsForm(forms.ModelForm):
+    class Meta:
+        model = RoomUserMoreDetails
+        db_table = 'room_moreuserdetails'
+        fields = ['phone', 'email']

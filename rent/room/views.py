@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
-from .models import Room, Images, RoomComments, RoomViewsTracker
-from .forms import RoomForm, ImageForm, RoomCommentForm
+from .models import Room, Images, RoomComments, RoomUserMoreDetails, RoomViewsTracker
+from .forms import RoomForm, ImageForm, RoomCommentForm, RoomUserMoreDetailsForm
 from taggit.models import Tag
 from accounts.models import AccountsUserdetails
 import functools
@@ -56,7 +56,7 @@ def number_of_products():
 def get_location():
     return get_list_or_404(AccountsUserdetails)
 
-@login_required(login_url="/accounts/login")
+@login_required(login_url="login")
 def create_product(request):
     try:
         c = check_profile(request)
@@ -84,10 +84,10 @@ def create_product(request):
                 }
                 return render(request, 'new_product.html',context)
             else:
-                context = { 'message':"Sorry, you have already uploaded this product.", 'link':"/", 'btnname':"Go Home" }
+                context = { 'message':"Sorry, you have already uploaded about this room.", 'link':"/", 'btnname':"Go Home" }
                 return render(request, 'pages/msg.html', context)
         else:
-            return render(request, '/accounts/profile')
+            return render(request, 'profile')
     except:
         context = { 'message':"Sorry, we don't have your address details. Please, create your profile first.", 'link':"/accounts/profile", 'btnname':"Create Profile" }
         return render(request, 'pages/msg.html', context)
@@ -134,7 +134,7 @@ def edit_product(request, id):
 def show_product(request, id):
     obj = get_object_or_404(Room, id=id)
     add = get_object_or_404(AccountsUserdetails, user_id=obj.seller.id)
-    images = Images.objects.filter(product=obj)
+    images = Images.objects.filter(room=obj)
     increase_views(request, obj)
     context = {
         'product':obj,
@@ -170,26 +170,26 @@ def liked_or_not(request, obj):
 
 def increase_views(request, obj):
     if(request.user.is_authenticated):
-        views = RoomViewsTracker.objects.filter(user=request.user, product=obj)
+        views = RoomViewsTracker.objects.filter(user=request.user, room=obj)
         if (views.exists()==False):
-            RoomViewsTracker.objects.create(product=obj, user=request.user)
+            RoomViewsTracker.objects.create(room=obj, user=request.user)
 
 def show_likes(request, obj):
     if(request.user.is_authenticated):
         return Room.objects.filter(likes=request.user)
 
 def show_noofviews(request, obj):
-    return RoomViewsTracker.objects.filter(product=obj).count()
+    return RoomViewsTracker.objects.filter(room=obj).count()
 
 def show_comment(request, obj):
-    return RoomComments.objects.filter(product=obj).order_by('-id')
+    return RoomComments.objects.filter(room=obj).order_by('-id')
 
 def make_comment(request, obj):
     if request.method == 'POST' or None:
         form = RoomCommentForm(request.POST or None)
         if form.is_valid():
             comment = request.POST.get('content')
-            RoomComments.objects.create(product=obj, user=request.user, content=comment)
+            RoomComments.objects.create(room=obj, user=request.user, content=comment)
             return redirect('show_product',str(obj.id))
     else:
         form = RoomCommentForm()
@@ -230,7 +230,54 @@ def like_product(request, id):
 
 def delete_pictures(request, id):
     product = get_object_or_404(Room, id=id)
-    obj = get_list_or_404(Images, product=product)
+    obj = get_list_or_404(Images, room=product)
     for o in obj:
         o.delete()
     return redirect('show_product',str(product.id))
+
+@login_required(login_url="login")
+def update_more_details(request, id):
+    try:
+        userobj = RoomUserMoreDetails.objects.get(user__id=id)
+        form = RoomUserMoreDetailsForm(instance=userobj)
+        if request.method == 'POST':
+            form = RoomUserMoreDetailsForm(request.POST, instance=userobj)
+            if form.is_valid():
+                form.user = request.user
+                form.save()
+                print(userobj.user.id)
+                return redirect('show_user',str(userobj.user.id))
+        context = {"title": "User Details Form", "form":form }
+        return render(request, 'updatedetails.html', context)
+    except:
+        return redirect('add-more', id)
+
+@login_required(login_url="login")
+def add_more_details(request, id):
+    user = request.user
+    form = RoomUserMoreDetailsForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            room = form.save(commit=False)
+            room.user = request.user
+            room.save() 
+            print("Saving data and redirecting")
+            return redirect('show_user', request.user.id)
+    context = {"title": "User Details Form", "form":form }
+    return render(request, 'updatedetails.html', context)
+
+def update_name_more(request, id):
+    try:
+        userobj = User.objects.get(user__id=id)
+        form = RoomUserMoreDetailsForm(instance=userobj)
+        if request.method == 'POST':
+            form = RoomUserMoreDetailsForm(request.POST, instance=userobj)
+            if form.is_valid():
+                form.user = request.user
+                form.save()
+                print(userobj.user.id)
+                return redirect('show_user',str(userobj.user.id))
+        context = {"title": "User Details Form", "form":form }
+        return render(request, 'updatedetails.html', context)
+    except:
+        return redirect('show_user', request.user.id)

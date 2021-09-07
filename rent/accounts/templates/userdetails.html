@@ -86,8 +86,9 @@
         {% if user.is_authenticated %}
         {% if user.username == userinfo.username %}
         
-        <a href="/accounts/profile-update/{{ userinfo.id }}" class="btn btn-primary btn-sm" role="button">Edit Profile</a>&nbsp;
-        <a href="/accounts/changepwd" class="btn btn-primary btn-sm" role="button">Change Password</a>
+        <a href="{% url 'profile-update' userinfo.id %}" class="btn btn-primary btn-sm" role="button">Edit Profile</a>&nbsp;
+        <a href="/accounts/changepwd" class="btn btn-primary btn-sm" role="button">Change Password</a>&nbsp;
+        <a href="{% url 'update-more' userinfo.id %}" class="btn btn-primary btn-sm" role="button">More Details Update</a>
         
         {% endif %}
         {% endif %}

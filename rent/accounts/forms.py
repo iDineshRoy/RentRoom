@@ -1,9 +1,10 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.db.models import fields
 from django.utils.encoding import smart_str
 # from .models import UserDetails, Comments
 from django.contrib.auth import password_validation
-from .models import AccountsComments
+from .models import AccountsComments, AccountsUserdetails
 
 class NumberForm(forms.Form):
     number = forms.CharField(widget=forms.NumberInput(attrs={'class':"form-control", 'placeholder':"Mobile Number"}), max_length=10, min_length=10, label="")
@@ -72,6 +73,11 @@ class UserDetailsForm(forms.Form):
     def clean_municipality(self, *args, **kwargs):
         n=self.cleaned_data.get('municipality')
         return n
+
+class AccountUserDetailsForm(forms.ModelForm):
+    class Meta:
+        model = AccountsUserdetails
+        fields = ['province', 'district', 'municipality','ward', 'skilldetails', 'age', 'skills']
     
 class CommentForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea(attrs={'id':'commentcontent','class':"form-control", 'placeholder':"तपाईंले वहाँकाे काम गराइ कस्ताे पाउनुभयो, लेख्नुहाेस्..", 'maxlength':'398'}), label="Comment")
