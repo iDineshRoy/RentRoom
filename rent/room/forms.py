@@ -15,8 +15,8 @@ class RoomForm(forms.ModelForm):
         }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['description'].widget.attrs.update({'class':"form-control", 'placeholder':"तपाइँकाे सामानकाे बारेमा थाेरै जानकारी", 'maxlength':'399'})
-        self.fields['price'].widget.attrs.update({'class':"form-control", 'placeholder':"मुल्य (रुपैँयामा)"})
+        self.fields['description'].widget.attrs.update({'class':"form-control", 'placeholder':"तपाइँकाे काेठाकाे बारेमा थाेरै जानकारी", 'maxlength':'399'})
+        self.fields['price'].widget.attrs.update({'class':"form-control", 'placeholder':"भाडा प्रति महिना (रुपैँयामा)"})
         self.fields['tags'].widget.attrs.update({'placeholder':"यहाँ केहि नलेख्नुभए पनि हुन्छ"})
 
 
@@ -32,7 +32,7 @@ class ImageForm(forms.ModelForm):
         self.fields['image'].widget.attrs.update({'multiple':True})
 
 class RoomCommentForm(forms.ModelForm):
-    content = forms.CharField(widget=forms.Textarea(attrs={'id':'commentcontent','class':"form-control", 'placeholder':"सामानबारे प्रश्न वा किनिसक्नुभए कस्ताे लाग्याे, लेख्नुहाेस्..", 'maxlength':'500'}), label="Comment")
+    content = forms.CharField(widget=forms.Textarea(attrs={'id':'commentcontent','class':"form-control", 'placeholder':"काेठाबारे प्रश्न वा भाडामा बसीसक्नुभए कस्ताे लाग्याे, लेख्नुहाेस्..", 'maxlength':'500'}), label="Comment")
     class Meta:
         model = RoomComments
         fields = [ 'content' ]

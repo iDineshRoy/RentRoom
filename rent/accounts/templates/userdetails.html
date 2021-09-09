@@ -55,7 +55,13 @@
                       <div class="media-body">
                         <h5 class="mt-0 mb-1">Contact</h5>
                         {% if user.is_authenticated %}
-                        <strong> <a href="tel:{{ userinfo.username }}">{{ userinfo.username }}</a> </strong>
+                        <strong> <a href="tel:{{ userinfo.username }}">{{ userinfo.username }}</a> </strong><br>
+                        
+                        {% if room_moredetails %}
+                        Phone: <strong>{{ room_moredetails.phone }}</strong><br>
+                        Email: <strong>{{ room_moredetails.email }}</strong><br>
+                        {% endif %}
+
                         {% else %}
                         <strong> <a href="/accounts/login?next=/accounts/user/{{ userinfo.id }}">Show Contact</a> </strong>
                         {% endif %}

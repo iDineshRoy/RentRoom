@@ -80,7 +80,7 @@ class AccountUserDetailsForm(forms.ModelForm):
         fields = ['province', 'district', 'municipality','ward', 'skilldetails', 'age', 'skills']
     
 class CommentForm(forms.ModelForm):
-    content = forms.CharField(widget=forms.Textarea(attrs={'id':'commentcontent','class':"form-control", 'placeholder':"तपाईंले वहाँकाे काम गराइ कस्ताे पाउनुभयो, लेख्नुहाेस्..", 'maxlength':'398'}), label="Comment")
+    content = forms.CharField(widget=forms.Textarea(attrs={'id':'commentcontent','class':"form-control", 'placeholder':"कृपया, काेठाकाे बारेमा केही लेख्नुहाेस्..", 'maxlength':'398'}), label="Comment")
     class Meta:
         model = AccountsComments
         fields = ['content']

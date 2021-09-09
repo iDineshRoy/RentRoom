@@ -6,7 +6,7 @@ from django.contrib.auth import logout, authenticate, login, update_session_auth
 from . import sms
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from room.models import Room
+from room.models import Room, RoomUserMoreDetails
 
 def showusers(request):
     obj_list = AccountsUserdetails.objects.filter().distinct()
@@ -130,6 +130,7 @@ def userinfo(request, id):
     try:
         userdetailsobj = get_object_or_404(AccountsUserdetails, user_id=id)
         userobj = get_object_or_404(User, id=id)
+        user_more = get_object_or_404(RoomUserMoreDetails, user=request.user)
         dadded=userdetailsobj.timestamp
         comment = AccountsComments.objects.filter(userdetails_id=id).order_by('-id')
         time = timezone.now()
@@ -146,6 +147,7 @@ def userinfo(request, id):
         context = { "userdetail": userdetailsobj, "userinfo": userobj, "title":title, "date":dadded, 'form':form, 'likes':likes, 'comments':comment }
         context['nearby'] = user_products(userdetailsobj)
         context['allusers'] = User.objects.all()
+        context['room_moredetails']=user_more
         if(userdetailsobj!=None):        
             return render(request, 'userdetails.html', context)
     except:
